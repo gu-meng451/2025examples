@@ -17,3 +17,6 @@ deps/deps.jl
 ## Compiled programs
 *.exe
 *.o
+
+## VScode
+.vscode/
