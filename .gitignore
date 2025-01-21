@@ -5,6 +5,8 @@
 *.jl.*.cov
 *.jl.mem
 deps/deps.jl
+# Ignore julia pkg
+Manifest.toml
 
 ## Matlab
 *.mat
