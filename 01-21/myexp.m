@@ -3,65 +3,16 @@ close all
 clc
 
 %%
-x = 10.1;
-N = 1000;
 
-tic
-for i = 1:N
-    [y1, iter1] = MyExp(x);
-end
-toc
-iter1
+%%
+x = -10;
+
+[y1, iter1] = MyExp(x)
 
 abs(exp(x) - y1)
 
-tic
-for i = 1:N
-    [y2, iter2] = MyExp_iter(x);
-end
-toc
-iter2
-
-
-
-tic
-for i = 1:N
-    y3 = exp(x);
-end
-toc
-
 %%
-function [my_exp, iter] = MyExp(X)
-
-x = X;
-if X < 0
-    x = -X;
-end
-
-% x = n + w
-n = floor(x);
-w = x - n;
-
-% e^x = e^(n+w) = e^n * e^w
-e = 2.718281828459045;
-en = 1;
-for i = 1:n
-    en = en*e;
-end
-
-[ew, iter] = MyExp_iter(w);
-
-if X < 0
-    my_exp = 1/(en*ew);
-else
-    my_exp = en*ew;
-end
-
-end
-
-
-%%
-function [my_exp, iter] = MyExp_iter(x)
+function [my_exp, iter] = MyExp(x)
 iter = 0;
 maxiter = 1000;
 tol = 1e-8;
