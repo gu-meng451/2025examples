@@ -77,3 +77,14 @@ sol = ode45(dx, [0,1],x0);
 
 figure
 plot(sol.x, sol.y(1:2,:), "LineWidth",3)
+
+
+%%
+C = [1, 0, 0, 0];
+Ox = [ C; 
+       C*A;
+       C*A^2;
+       C*A^3];
+rank(Ox)
+
+
