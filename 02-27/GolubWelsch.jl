@@ -6,17 +6,18 @@ using LinearAlgebra
 
 function gauss_legendre(n)
     # Construct the Jacobi matrix
-    beta = 0.5 ./ sqrt.(1 .- (2 .* (1:n-1)) .^ (-2))  # Subdiagonal elements
-    J = SymTridiagonal(zeros(n), beta)  # Jacobi matrix
+    β = @. 0.5 / sqrt(1 - (2 * (1:n-1)) ^ (-2))  # Subdiagonal elements
+    T = SymTridiagonal(zeros(n), β)  # Jacobi matrix
 
     # Compute eigenvalues and eigenvectors
-    vals, vecs = eigen(J)
+    λ, V = eigen(T)
+    p = sortperm(λ)
 
     # Nodes are the eigenvalues
-    nodes = vals
+    nodes = λ[p]
 
     # Weights are given by the square of the first row of the eigenvectors
-    weights = 2 * (vecs[1, :]) .^ 2
+    weights = 2V[1, p] .^ 2
 
     return nodes, weights
 end
