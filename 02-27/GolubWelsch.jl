@@ -23,7 +23,7 @@ function gauss_legendre(n)
 end
 
 # Example usage
-n = 5;  # Number of quadrature points
+n = 30;  # Number of quadrature points
 nodes, weights = gauss_legendre(n);
 
 println("Nodes:", nodes)

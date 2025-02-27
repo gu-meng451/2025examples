@@ -25,3 +25,19 @@ plt = plot(n_list, err1, lw=2,
     xscale=:log10, yscale=:log10)
 plot!(plt, n -> n^-2, lw=2, 
     linestyle=:dash, label="O(n^-2)")
+
+
+## Simpson 1/3 Rule
+n_list = @. 2 ^ (1:8) + 1;
+I_list = [QuadRules.simpson13(f, a, b, n) for n in n_list];
+err1 = @. abs(I_list - I_true) / I_true
+
+plot!(plt, n_list, err1, lw=2, label="Simpson 1/3")
+plot!(plt, n -> n^-4, lw=2,
+    linestyle=:dash, label="O(n^-4)")
+
+ ## For GL
+ I_list = [QuadRules.gl(f, a, b, n) for n in n_list];
+ err1 = @. abs( I_list - I_true ) / I_true + eps();
+ plot!(plt, n_list, err1, lw=2, label="Gauss-Legendre")
+

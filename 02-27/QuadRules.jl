@@ -24,7 +24,30 @@ function simpson13(f::Function, a::Real, b::Real, n_points::Int)
     # ensure we have an odd number of n_points
     @assert isodd(n_points) && n_points > 2
 
-    ## TODO: Fill in steps here
+    ##
+    n_seg = n_points - 1;
+    h = (b-a)/n_seg;
+    x(i) = a + i*h;
+
+    I = 0.0
+
+    # Left edge (x = a)
+    I += f(x(0));
+
+    # Odd nodes
+    for i = 1:n_seg/2
+        I += 4*f(x(2i-1));
+    end
+
+    # even 
+    for i = 1:(n_seg/2-1)
+        I += 2*f(x(2i));
+    end
+
+    # right edge
+    I += f(b)
+
+    return I*h/3
 
 end
 
@@ -48,7 +71,22 @@ end
 
 function gl(f::Function, a::Real, b::Real, n_points::Int)
     
-    ## TODO: complete GL
+    ## get nodes and weights
+    Ξ,W = gauss_legendre_rule(n_points);
+
+    J = (b-a)/2;
+    I = 0.;
+
+    # for i = 1:n
+    #     ξ = Ξ[i]
+    #     w = W[i]
+
+    for (ξ,w) in zip(Ξ,W)
+        t = (b-a)/2*ξ + (b+a)/2;
+        I += w*f(t)*J;
+    end
+
+    return I
     
 end
 
