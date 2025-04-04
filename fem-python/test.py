@@ -28,3 +28,15 @@ BC_g_list[0, 0] = 1
 # %%
 mesh = pp.build_mesh(x, [], [], IEN, 1, BC_fix_list, BC_g_list)
 # %%
+
+import quadrature as quad
+quad_rule = quad.gauss_legendre_1d(3)
+quad_rule.w
+
+# %%
+import shapefunctions as sf
+N = sf.shapefunc("line")
+N(0)
+# %%
+import Bar1D as bar
+# %%
