@@ -55,7 +55,7 @@ function draw_element_stress(ax, mesh, q, properties;
                 for (i, ξ) in enumerate(ξ)
                     NN, Nξ = N(ξ)
                     X[i] = dot(NN, xe)
-                    σ[i] = properties.E * properties.A * dot(Nξ, qe) / dot(Nξ, xe)
+                    σ[i] = properties.E * dot(Nξ, qe) / dot(Nξ, xe)
                 end
 
                 lines!(ax, X, σ, color=color,
