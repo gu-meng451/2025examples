@@ -64,8 +64,8 @@ def build_ID(nnp, g_list, ned, fix_list):
     # Fix numbering to be zero-based
     ID = ID - 1
     
-    free_range = range(1, neq) - 1
-    freefix_range = range(neq + 1, neq + ng + 1) - 1
+    free_range = range(neq)
+    freefix_range = range(neq, neq + ng)
     
     return ID, neq, ng, free_range, freefix_range
 
