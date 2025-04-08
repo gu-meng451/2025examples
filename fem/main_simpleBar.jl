@@ -42,14 +42,14 @@ x = LinRange(0, prop.L, nnp) |> collect
 x[:] = x[[1,5,2,3,4]]
 
 ## Alternate: using mode nodes
-# nnp = 300 # number of nodes
-# nel = nnp - 1 # number of elements
-# nee = 2 # number of equations per element
-# IEN = Dict("line" => zeros(Int, nel, nee))
-# for e in 1:nel
-#     IEN["line"][e, :] = [e, e + 1]
-# end
-# x = LinRange(0, prop.L, nnp) |> collect
+nnp = 300 # number of nodes
+nel = nnp - 1 # number of elements
+nee = 2 # number of equations per element
+IEN = Dict("line" => zeros(Int, nel, nee))
+for e in 1:nel
+    IEN["line"][e, :] = [e, e + 1]
+end
+x = LinRange(0, prop.L, nnp) |> collect
 
 ## Essential Boundary Conditions: [i,A]
 BC_fix_list = zeros(Bool, 1, nnp)
@@ -71,6 +71,12 @@ F = Bar1D.assemble_rhs(m, f, quad_rules)
 
 ## Solve the system
 q = zeros(m.nnp * m.ned)
+
+# apply essential BCs in q[r2]
+idx = findall(BC_fix_list)
+q[ m.ID[idx] ] = BC_g_list[idx]  
+
+# solve
 r1 = m.free_range
 r2 = m.freefix_range
 q[r1] = K[r1, r1] \ (F[r1] - K[r1, r2] * q[r2])
