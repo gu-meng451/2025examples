@@ -2,7 +2,7 @@ function [R] = assemble_rhs(ned, nen, nnp, nel, eltype, ...
     x, IEN, LM, quad_rules, fext)
 %%
 totaldofs = ned*nnp;
-K = zeros(totaldofs,totaldofs);
+R = zeros(totaldofs,1);
 
 %% loop over all elements
 for e = 1:nel

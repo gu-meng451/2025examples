@@ -31,9 +31,10 @@ properties.A = 1;
 properties.L = 1;
 properties.f0 = 1;
 
+fext = @(x) properties.f0;
 
 %% Make a new FEM mesh
-nnp = 16;
+nnp = 5;
 nel = nnp-1;
 nee = 2;
 % all elements are type 1, 2-node lines
@@ -45,9 +46,9 @@ eltype(1:nel) = 1;
 %  A: global node number
 %  a: local node number
 %  e: element number
-IEN = zeros(nel, nee);
+IEN = zeros(nee, nel);
 for e = 1:nel
-   IEN(e,:) = [e, e+1]; 
+   IEN(:,e) = [e, e+1]; 
 end
 x = linspace(0,properties.L,nnp)';
 y = zeros(size(x));
@@ -89,10 +90,11 @@ qn = zeros(ndofs,1);
 
 % Build K
 [K] = assemble_K(ned, nen, nnp, nel, eltype, ...
-    x, y, IEN, LM, quad_rules);
+    x, IEN, LM, quad_rules, properties);
 
 % Build the right-hand-side
-R = assemble_rhs();
+R = assemble_rhs(ned, nen, nnp, nel, eltype, ...
+    x, IEN, LM, quad_rules, fext);
 
 %% Apply BC's
 totaldofs = ned*nnp;
@@ -116,8 +118,13 @@ K_fr = K(1:neq, idx_fr);
 q(1:neq) = K_ff\( R(idx_ff) - K_fr*q(idx_fr) );
 
 %% make a new plot to show the solution
-[~,ax2] = init_plot_figure();
-ax2.XLim = [-0.1, 1.1];
-ax2.YLim = [-0.1, 1.1];
+[fig2,ax2] = init_plot_figure();
+ax2.XLim = [-0.1, properties.L];
+ax2.YLim = [-0.1, 0.6];
+ax2.YLabel.String = "Displacement u(x)";
 
-plot_element_solution(ax2, IEN, ID, eltype, x, y, z, q);
+u_true = @(x,p) p.f0/(2*p.E*p.A)*(2*p.L - x).*x;
+fplot(ax2, @(x) u_true(x,properties), [0,properties.L], ...
+    'LineWidth',2)
+
+plot_element_solution(ax2, IEN, ID, eltype, x, q, 'color', 'r');
