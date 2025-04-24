@@ -42,7 +42,7 @@ x = LinRange(0, prop.L, nnp) |> collect
 x[:] = x[[1,5,2,3,4]]
 
 ## Alternate: using mode nodes
-nnp = 300 # number of nodes
+nnp = 50 # number of nodes
 nel = nnp - 1 # number of elements
 nee = 2 # number of equations per element
 IEN = Dict("line" => zeros(Int, nel, nee))
