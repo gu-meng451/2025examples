@@ -6,8 +6,8 @@ using GLMakie
 ## Simple 3 dof example
 M = diagm(0 => [1.0, 1.0, 1.0])
 K = diagm(0 => [2.0, 2.0, 2.0], -1 => [-1.0, -1.0], 1 => [-1.0, -1.0])
-κ1 = 0.01
-κ2 = 0.01
+κ1 = 0.0
+κ2 = 0.0
 C = κ1 * M + κ2 * K
 Fext(t) = [0.0, 0.0, 0.0]
 
@@ -18,7 +18,7 @@ v0 = [0.0, 0.0, 0.0]
 ## Time step
 Δt = 0.1
 tfinal = 100.0
-ρ∞ = 0.5
+ρ∞ = 0.1
 
 ## Trap Rule
 function trap_step(dn, vn, an, tn, Δt, Fext, M, K, C)
@@ -53,8 +53,6 @@ function trap(d0, v0, tfinal, Δt, Fext, M, K, C)
     end
     return Dn, Vn, An
 end
-
-
 
 ## Generalized alpha method
 function genα_step(dn, vn, an, tn, Δt, Fext, M, K, C, 
@@ -112,13 +110,12 @@ Dn_ga, Vn_ga, An_ga = genα(d0, v0, tfinal, Δt, ρ∞, Fext, M, K, C)
 fig = Figure()
 ax = Axis(fig[1, 1], title = "Displacement", xlabel = "Time", ylabel = "Displacement")
 
-lines!(ax, 0:Δt:tfinal, Dn_trap[1, :], label="trap DOF 1")
-lines!(ax, 0:Δt:tfinal, Dn_trap[2, :], label="trap DOF 2")
+# lines!(ax, 0:Δt:tfinal, Dn_trap[1, :], label="trap DOF 1")
+# lines!(ax, 0:Δt:tfinal, Dn_trap[2, :], label="trap DOF 2")
 lines!(ax, 0:Δt:tfinal, Dn_trap[3, :], label="trap DOF 3")
 
-
-lines!(ax, 0:Δt:tfinal, Dn_ga[1, :], label="gen α DOF 1")
-lines!(ax, 0:Δt:tfinal, Dn_ga[2, :], label="gen α DOF 2")
-lines!(ax, 0:Δt:tfinal, Dn_ga[3, :], label="gen α DOF 3")
+# lines!(ax, 0:Δt:tfinal, Dn_ga[1, :], label="gen α DOF 1", linestyle=:dash)
+# lines!(ax, 0:Δt:tfinal, Dn_ga[2, :], label="gen α DOF 2", linestyle=:dash)
+lines!(ax, 0:Δt:tfinal, Dn_ga[3, :], label="gen α DOF 3", linestyle=:dash)
 # add the legend
 Legend(fig, ax)
