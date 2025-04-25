@@ -18,7 +18,7 @@ v0 = [0.0, 0.0, 0.0]
 ## Time step
 Δt = 0.1
 tfinal = 100.0
-ρ∞ = 0.1
+ρ∞ = 0.9
 
 ## Trap Rule
 function trap_step(dn, vn, an, tn, Δt, Fext, M, K, C)
@@ -44,14 +44,18 @@ function trap(d0, v0, tfinal, Δt, Fext, M, K, C)
     Vn = zeros(length(d0), length(t))
     An = zeros(length(d0), length(t))
 
-    for (i, tn) in enumerate(t)
+    Dn[:, 1] = d0
+    Vn[:, 1] = v0
+    An[:, 1] = a0
+
+    for (i, tn) in enumerate(t[1:end-1])
         dn, vn, an = trap_step(dn, vn, an, tn, Δt, Fext, M, K, C)
 
-        Dn[:, i] = dn
-        Vn[:, i] = vn
-        An[:, i] = an
+        Dn[:, i+1] = dn
+        Vn[:, i+1] = vn
+        An[:, i+1] = an
     end
-    return Dn, Vn, An
+    return Dn, Vn, An, t
 end
 
 ## Generalized alpha method
@@ -81,7 +85,10 @@ function genα(d0, v0, tfinal, Δt, ρ∞, Fext, M, K, C)
     Vn = zeros(length(d0), length(t))
     An = zeros(length(d0), length(t))
 
-    ## Build the system matrices
+    Dn[:, 1] = d0
+    Vn[:, 1] = v0
+    An[:, 1] = a0
+
     ## Build the generalized-alpha method
     αf = ρ∞ / (1 + ρ∞)
     αm = (2ρ∞ - 1) / (1 + ρ∞)
@@ -92,18 +99,18 @@ function genα(d0, v0, tfinal, Δt, ρ∞, Fext, M, K, C)
     P3 = (1 - αm) / β / Δt * M + (1 - αf) * (γ - β) / β * C
     P4 = (1 - αm) / β / Δt^2 * M + (1 - αf) * γ / β / Δt * C
 
-    for (i, tn) in enumerate(t)
+    for (i, tn) in enumerate(t[1:end-1])
         dn, vn, an = genα_step(dn, vn, an, tn, Δt, Fext, M, K, C, P1, P2, P3, P4, αf, αm, γ , β )
 
-        Dn[:, i] = dn
-        Vn[:, i] = vn
-        An[:, i] = an
+        Dn[:, i+1] = dn
+        Vn[:, i+1] = vn
+        An[:, i+1] = an
     end
     return Dn, Vn, An
 end
 
 ## Run the integration
-Dn_trap, Vn_trap, An_trap = trap(d0, v0, tfinal, Δt, Fext, M, K, C)
+Dn_trap, Vn_trap, An_trap, t = trap(d0, v0, tfinal, Δt, Fext, M, K, C)
 Dn_ga, Vn_ga, An_ga = genα(d0, v0, tfinal, Δt, ρ∞, Fext, M, K, C)
 
 ## Plot the results
@@ -115,7 +122,7 @@ lines!(ax, 0:Δt:tfinal, Dn_trap[2, :], label="trap DOF 2")
 # lines!(ax, 0:Δt:tfinal, Dn_trap[3, :], label="trap DOF 3")
 
 # lines!(ax, 0:Δt:tfinal, Dn_ga[1, :], label="gen α DOF 1", linestyle=:dash)
-# lines!(ax, 0:Δt:tfinal, Dn_ga[2, :], label="gen α DOF 2", linestyle=:dash)
+lines!(ax, 0:Δt:tfinal, Dn_ga[2, :], label="gen α DOF 2", linestyle=:dash)
 # lines!(ax, 0:Δt:tfinal, Dn_ga[3, :], label="gen α DOF 3", linestyle=:dash)
 
 ## True solution
