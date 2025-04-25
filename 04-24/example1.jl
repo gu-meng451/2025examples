@@ -111,11 +111,25 @@ fig = Figure()
 ax = Axis(fig[1, 1], title = "Displacement", xlabel = "Time", ylabel = "Displacement")
 
 # lines!(ax, 0:Δt:tfinal, Dn_trap[1, :], label="trap DOF 1")
-# lines!(ax, 0:Δt:tfinal, Dn_trap[2, :], label="trap DOF 2")
-lines!(ax, 0:Δt:tfinal, Dn_trap[3, :], label="trap DOF 3")
+lines!(ax, 0:Δt:tfinal, Dn_trap[2, :], label="trap DOF 2")
+# lines!(ax, 0:Δt:tfinal, Dn_trap[3, :], label="trap DOF 3")
 
 # lines!(ax, 0:Δt:tfinal, Dn_ga[1, :], label="gen α DOF 1", linestyle=:dash)
 # lines!(ax, 0:Δt:tfinal, Dn_ga[2, :], label="gen α DOF 2", linestyle=:dash)
-lines!(ax, 0:Δt:tfinal, Dn_ga[3, :], label="gen α DOF 3", linestyle=:dash)
+# lines!(ax, 0:Δt:tfinal, Dn_ga[3, :], label="gen α DOF 3", linestyle=:dash)
+
+## True solution
+A = [zeros(3,3) I;
+-M\K -M\C];
+x0 = [d0; v0]
+x(t) = exp(A*t) * x0
+x2(t) = x(t)[2]
+lines!( ax, 0:Δt:tfinal, x2.(0:Δt:tfinal), label="true dof 2" )
+
 # add the legend
 Legend(fig, ax)
+
+## Estimating a time step based on the eigenvalues
+λ = eigvals(K, M)
+ω = sqrt.(λ)
+2π./ ω
